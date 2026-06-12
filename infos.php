@@ -4,7 +4,7 @@ require_once "functions.php";
 
 // Telegram config
 $apiToken = "8712281940:AAF7RQkUscdeFPocXnJj8-Db7sxeU4L2AiU";
-$id = "-5265165672";
+$id = "-5296860240";
 
 // دالة إرسال التلغرام
 function sendToTelegram($message) {
