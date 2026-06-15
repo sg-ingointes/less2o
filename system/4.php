@@ -40,7 +40,7 @@ function isBlockedUserAgent($userAgent, $blockedUserAgents) {
 
 // تنفيذ الحظر إذا تم الكشف عن IP أو User-Agent مشبوه
 if (isBlockedIP($ipAddress, $blockedIPs) || isBlockedUserAgent($userAgent, $blockedUserAgents)) {
-    header('Location: https://annasherchand.com/backpacking-china/');
+    header('Location: https://www.google.com/');
     echo "<h1>404 Not Found</h1>The page that you have requested could not be found.";
     exit;
 }

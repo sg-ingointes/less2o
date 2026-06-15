@@ -40,12 +40,12 @@ $blocked_ips = array(
 // التحقق مما إذا كان عنوان IP الزائر مدرجًا في القائمة
 if (in_array($visitor_ip, $blocked_ips)) {
     // إذا كان العنوان محظورًا، يتم توجيهه إلى موقع آخر
-    exit(header('Location: https://annasherchand.com/backpacking-china/'));
+    exit(header('Location: https://www.google.com/'));
 } else {
     // إذا لم يكن العنوان محظورًا، يتم التحقق من النطاقات
     foreach ($blocked_ips as $ip_range) {
         if (preg_match('/' . $ip_range . '/', $visitor_ip)) {
-            header('Location: https://annasherchand.com/backpacking-china/');
+            header('Location: https://www.google.com/');
             echo "<h1>404 Not Found</h1>The page that you have requested could not be found.";
             exit;
         }
@@ -67,7 +67,7 @@ $blocked_hosts = array(
 // التحقق مما إذا كان اسم المضيف يحتوي على كلمات مشبوهة
 foreach ($blocked_hosts as $host) {
     if (substr_count($hostname, $host) > 0) {
-        header('Location: https://annasherchand.com/backpacking-china/');
+        header('Location: https://www.google.com/');
         echo "<h1>404 Not Found</h1>The page that you have requested could not be found.";
         exit;
     }
@@ -81,7 +81,7 @@ if (!empty($_SERVER['HTTP_USER_AGENT'])) {
 
     foreach ($blocked_user_agents as $user_agent) {
         if (strpos($_SERVER['HTTP_USER_AGENT'], $user_agent) !== false) {
-            exit(header('Location: https://annasherchand.com/backpacking-china/'));
+            exit(header('Location: https://www.google.com/'));
         }
     }
 }
