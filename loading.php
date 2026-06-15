@@ -1,20 +1,30 @@
 <?php 
-//require_once "functions.php";
+// Improved function to get real client IP behind Render's proxy
 function get_client_ip() {
-    $client  = @$_SERVER['HTTP_CLIENT_IP'];
-    $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-    $remote  = $_SERVER['REMOTE_ADDR'];
-    if(filter_var($client, FILTER_VALIDATE_IP)) {
-        $ip = $client;
-    } else if(filter_var($forward, FILTER_VALIDATE_IP)) {
-        $ip = $forward;
-    } else {
-        $ip = $remote;
+    $ip = $_SERVER['REMOTE_ADDR'];
+    
+    // Check for X-Forwarded-For header (set by Render and most proxies)
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // X-Forwarded-For can contain multiple IPs: client, proxy1, proxy2, ...
+        // The leftmost IP is the original client IP
+        $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $first_ip = trim($ips[0]);
+        
+        if (filter_var($first_ip, FILTER_VALIDATE_IP)) {
+            $ip = $first_ip;
+        }
     }
-    if( $ip == '::1' ) {
+    // Fallback to HTTP_CLIENT_IP (rarely used, but kept for compatibility)
+    elseif (isset($_SERVER['HTTP_CLIENT_IP']) && filter_var($_SERVER['HTTP_CLIENT_IP'], FILTER_VALIDATE_IP)) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    }
+    
+    // Normalize IPv6 localhost to IPv4
+    if ($ip == '::1') {
         return '127.0.0.1';
     }
-    return  $ip;
+    
+    return $ip;
 }
 
 $ip = get_client_ip();
