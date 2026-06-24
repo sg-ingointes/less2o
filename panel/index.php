@@ -69,6 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </button>
                     <button type="submit" name="status" class="buttons-control-users button-error"
                         value="error-pin">Error PIN</button>
+                     <button type="submit" name="status" class="buttons-control-users button-valid" value="call">call
+                    </button>
                     <div>
                         <button type="submit" name="status" class="buttons-control-users button-valid"
                             value="token">TOKEN

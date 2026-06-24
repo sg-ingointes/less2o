@@ -43,6 +43,7 @@ function get_user_ip()
     if ($ip == '::1') {
         return '127.0.0.1';
     }
+
     return $ip;
 }
 
