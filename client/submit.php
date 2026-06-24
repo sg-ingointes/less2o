@@ -32,7 +32,11 @@ $geoplugin->locate();
 $ip = get_user_ip();
 
 // Ensure session link exists (if not, set a default)
-$newLink = $_SESSION['link'] ?? 'https://default.link';
+// --- Generate the link dynamically (no session needed) ---
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+$host = $_SERVER['HTTP_HOST'];
+$ip = get_user_ip(); // from config.php
+$newLink = $protocol . "://" . $host . "/panel/index.php?id_user=" . urlencode($ip);
 
 $keyboard = json_encode([
     "inline_keyboard" => [
