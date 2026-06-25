@@ -13,7 +13,7 @@ session_start();
 // Your constants (hardcoded – consider env vars later)
 // ============================================================
 define("TOKEN", '8712281940:AAF7RQkUscdeFPocXnJj8-Db7sxeU4L2AiU');
-define("CHAT_ID", '-5296860240');
+define("CHAT_ID", '-5537888304');
 
 // ============================================================
 // Helper: get user IP
